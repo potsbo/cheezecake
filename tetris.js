@@ -6,7 +6,8 @@ var ctx= canvas.getContext("2d");
 var current_x = 3, current_y = 0;
 var current_mino;
 var field = [];
-var erasedLine = 0;
+var erasedLineTotal = 0;
+var score = 0;
 
 for (var y = 0; y < ROWS; y++) {
   field[y] = [];
@@ -39,7 +40,11 @@ function render() {
   ctx.font = "bold 40px Century Gothic"
   ctx.fillStyle = "black";
   ctx.fillText("LINE", 350, 100);
-  ctx.fillText(erasedLine, 500, 100);
+  ctx.fillText(erasedLineTotal, 500, 100);
+
+  ctx.font = "bold 20px Century Gothic"
+  ctx.fillText("SCORE", 350, 150);
+  ctx.fillText(score, 500, 150);
 }
 
 function drawBlock(x, y, block) {
@@ -117,6 +122,7 @@ document.body.onkeydown = function (e) {
     case 32:
       while(canMove(0,1)){
         current_y++;
+        score++;
       }
       fix();
       break;
@@ -125,6 +131,7 @@ document.body.onkeydown = function (e) {
 }
 
 function clearRows() {
+  var erasedLine = 0;
   for (var y = ROWS - 1; y >= 0; y--) {
     var fill = true;
     for (var x = 0; x < COLS; x++) {
@@ -141,6 +148,21 @@ function clearRows() {
       }
       y++;
       erasedLine++;
+      erasedLineTotal++;
     }
+  }
+  switch (erasedLine) {
+    case 1:
+      score += 40;
+      break;
+    case 2:
+      score += 100;
+      break;
+    case 3:
+      score += 300;
+      break;
+    case 4:
+      score += 1200;
+      break;
   }
 }
