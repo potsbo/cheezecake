@@ -8,7 +8,9 @@ var current_mino;
 var field = [];
 var erasedLineTotal = 0;
 var score = 0;
-var clock = 500
+var clock = 1000;
+var level = 0;
+var status;
 
 for (var y = 0; y < ROWS+1; y++) {
   field[y] = [];
@@ -19,7 +21,8 @@ for (var y = 0; y < ROWS+1; y++) {
 
 current_mino = newMino();
 render();
-var game = setInterval(tick, clock);
+// var game = setInterval(tick, clock);
+tick();
 
 
 
@@ -38,14 +41,18 @@ function render() {
       drawBlock(current_x + x, current_y + y - 1, current_mino[y][x]);
     }
   }
-  ctx.font = "bold 40px Century Gothic"
+  ctx.font = "bold 30px Century Gothic"
   ctx.fillStyle = "black";
   ctx.fillText("LINE", 350, 100);
   ctx.fillText(erasedLineTotal, 500, 100);
 
-  ctx.font = "bold 20px Century Gothic"
+  ctx.font = "bold 30px Century Gothic"
   ctx.fillText("SCORE", 350, 150);
   ctx.fillText(score, 500, 150);
+
+  ctx.font = "bold 30px Century Gothic"
+  ctx.fillText("LEVEL", 350, 200);
+  ctx.fillText(level, 500, 200);
 }
 
 function drawBlock(x, y, block) {
@@ -62,6 +69,8 @@ function tick() {
   } else {
     fix();
     clearRows();
+    level = Math.floor(score / 1000)
+    clock = getClock();
     current_mino = newMino();
     current_x = 3;
     current_y = 0;
@@ -72,6 +81,9 @@ function tick() {
     }
   }
   render();
+  setTimeout(function(){
+    tick();
+  }, clock);
 }
 
 function fix() {
@@ -169,4 +181,8 @@ function clearRows() {
       score += 1200;
       break;
   }
+}
+
+function getClock() {
+  return 1000 - 200 * level;
 }
