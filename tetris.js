@@ -8,6 +8,7 @@ var current_mino;
 var field = [];
 var erasedLineTotal = 0;
 var score = 0;
+var clock = 500
 
 for (var y = 0; y < ROWS+1; y++) {
   field[y] = [];
@@ -18,7 +19,7 @@ for (var y = 0; y < ROWS+1; y++) {
 
 current_mino = newMino();
 render();
-var game = setInterval(tick, 500);
+var game = setInterval(tick, clock);
 
 
 
@@ -126,6 +127,9 @@ document.body.onkeydown = function (e) {
       }
       fix();
       break;
+    case 80:
+      alert("pause");
+      breat;
   }
   render();
 }
