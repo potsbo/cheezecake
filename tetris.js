@@ -6,6 +6,7 @@ var ctx= canvas.getContext("2d");
 var current_x = 3, current_y = 0;
 var current_mino;
 var field = [];
+var eracedLine = 0;
 
 for (var y = 0; y < ROWS; y++) {
   field[y] = [];
@@ -18,9 +19,13 @@ current_mino = newMino();
 render();
 setInterval(tick, 500);
 
+
+
 function render() {
-  ctx.clearRect(0, 0, FIELD_W, FIELD_H);
+  //  ctx.clearRect(0, 0, FIELD_W, FIELD_H);
+  ctx.clearRect(0, 0, 600, 600);
   ctx.strokeStyle = "black";
+  ctx.strokeRect(0, 0, 300, 600);
   for (var y = 0; y < ROWS; y++) {
     for (var x = 0; x < COLS; x++) {
       drawBlock(x, y, field[y][x]);
@@ -31,6 +36,10 @@ function render() {
       drawBlock(current_x + x, current_y + y, current_mino[y][x]);
     }
   }
+  ctx.font = "bold 40px Century Gothic"
+  ctx.fillStyle = "black";
+  ctx.fillText("LINE", 350, 100);
+  ctx.fillText(eracedLine, 500, 100);
 }
 
 function drawBlock(x, y, block) {
@@ -127,7 +136,8 @@ function clearRows() {
           field[v + 1][x] = field[v][x];
         }
       }
-      y++
+      y++;
+      eracedLine++;
     }
   }
 }
