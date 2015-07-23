@@ -110,6 +110,10 @@ document.body.onkeydown = function (e) {
         current_y++;
       }
       fix();
+	  clearRows();
+      current_mino = newMino();
+      current_x = 3;
+      current_y = 0;
       break;
   }
   render();
