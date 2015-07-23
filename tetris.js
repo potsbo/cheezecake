@@ -9,7 +9,7 @@ var field = [];
 var erasedLineTotal = 0;
 var score = 0;
 
-for (var y = 0; y < ROWS; y++) {
+for (var y = 0; y < ROWS+1; y++) {
   field[y] = [];
   for (var x = 0; x < COLS; x++) {
     field[y][x] = 0;
@@ -29,12 +29,12 @@ function render() {
   ctx.strokeRect(0, 0, 300, 600);
   for (var y = 0; y < ROWS; y++) {
     for (var x = 0; x < COLS; x++) {
-      drawBlock(x, y, field[y][x]);
+      drawBlock(x, y, field[y+1][x]);
     }
   }
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
-      drawBlock(current_x + x, current_y + y, current_mino[y][x]);
+      drawBlock(current_x + x, current_y + y - 1, current_mino[y][x]);
     }
   }
   ctx.font = "bold 40px Century Gothic"
@@ -90,7 +90,7 @@ function canMove(move_x, move_y, move_mino) {
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
       if (next_mino[y][x]) {
-        if (next_y + y >= ROWS || next_x + x < 0 || next_x + x >= COLS || field[next_y + y][next_x + x]) {
+        if (next_y + y >= ROWS + 1 || next_x + x < 0 || next_x + x >= COLS || field[next_y + y][next_x + x]) {
           return false;
         }
       }
@@ -132,7 +132,7 @@ document.body.onkeydown = function (e) {
 
 function clearRows() {
   var erasedLine = 0;
-  for (var y = ROWS - 1; y >= 0; y--) {
+  for (var y = ROWS; y >= 0; y--) {
     var fill = true;
     for (var x = 0; x < COLS; x++) {
       if (field[y][x] == 0) {
