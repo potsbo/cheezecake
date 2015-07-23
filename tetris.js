@@ -51,9 +51,9 @@ function tick() {
     current_x = 3;
     current_y = 0;
     if(!canMove(0,0)){
-        render();
-        clearInterval(game);
-        alert("Game Over");
+      render();
+      clearInterval(game);
+      alert("Game Over");
     }
   }
   render();
@@ -105,12 +105,12 @@ document.body.onkeydown = function (e) {
         current_mino = rotated;
       }
       break;
-	case 32:
-	  while(canMove(0,1)){
-		  current_y++;
-	  }
-	  fix();
-	  break;
+    case 32:
+      while(canMove(0,1)){
+        current_y++;
+      }
+      fix();
+      break;
   }
   render();
 }
