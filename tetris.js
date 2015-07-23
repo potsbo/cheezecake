@@ -17,7 +17,7 @@ for (var y = 0; y < ROWS; y++) {
 
 current_mino = newMino();
 render();
-setInterval(tick, 500);
+var game = setInterval(tick, 500);
 
 
 
@@ -59,6 +59,11 @@ function tick() {
     current_mino = newMino();
     current_x = 3;
     current_y = 0;
+    if(!canMove(0,0)){
+      render();
+      clearInterval(game);
+      alert("Game Over");
+    }
   }
   render();
 }
@@ -94,31 +99,29 @@ document.body.onkeydown = function (e) {
     case 37:
       if (canMove(-1, 0))
         current_x--;
-      render();
       break;
     case 39:
       if (canMove(1, 0))
         current_x++;
-      render();
       break;
     case 40:
       if (canMove(0, 1))
         current_y++;
-      render();
       break;
     case 38:
       rotated = rotate(current_mino);
       if (canMove(0, 0, rotated)) {
         current_mino = rotated;
       }
-      render();
       break;
-	case 32:
-	  while(canMove(0,1)){
-		  current_y++;
-	  }
-	  break;
+    case 32:
+      while(canMove(0,1)){
+        current_y++;
+      }
+      fix();
+      break;
   }
+  render();
 }
 
 function clearRows() {
