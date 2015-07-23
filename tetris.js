@@ -104,6 +104,11 @@ document.body.onkeydown = function (e) {
       }
       render();
       break;
+	case 32:
+	  while(canMove(0,1)){
+		  current_y++;
+	  }
+	  break;
   }
 }
 
