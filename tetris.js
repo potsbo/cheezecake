@@ -85,24 +85,20 @@ document.body.onkeydown = function (e) {
     case 37:
       if (canMove(-1, 0))
         current_x--;
-      render();
       break;
     case 39:
       if (canMove(1, 0))
         current_x++;
-      render();
       break;
     case 40:
       if (canMove(0, 1))
         current_y++;
-      render();
       break;
     case 38:
       rotated = rotate(current_mino);
       if (canMove(0, 0, rotated)) {
         current_mino = rotated;
       }
-      render();
       break;
 	case 32:
 	  while(canMove(0,1)){
@@ -111,6 +107,7 @@ document.body.onkeydown = function (e) {
 	  fix();
 	  break;
   }
+  render();
 }
 
 function clearRows() {
