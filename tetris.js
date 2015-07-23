@@ -16,7 +16,7 @@ for (var y = 0; y < ROWS; y++) {
 
 current_mino = newMino();
 render();
-setInterval(tick, 500);
+var game = setInterval(tick, 500);
 
 function render() {
   ctx.clearRect(0, 0, FIELD_W, FIELD_H);
@@ -50,6 +50,11 @@ function tick() {
     current_mino = newMino();
     current_x = 3;
     current_y = 0;
+    if(!canMove(0,0)){
+        render();
+        clearInterval(game);
+        alert("Game Over");
+    }
   }
   render();
 }
