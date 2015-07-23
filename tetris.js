@@ -6,7 +6,7 @@ var ctx= canvas.getContext("2d");
 var current_x = 3, current_y = 0;
 var current_mino;
 var field = [];
-var eracedLine = 0;
+var erasedLine = 0;
 
 for (var y = 0; y < ROWS; y++) {
   field[y] = [];
@@ -39,7 +39,7 @@ function render() {
   ctx.font = "bold 40px Century Gothic"
   ctx.fillStyle = "black";
   ctx.fillText("LINE", 350, 100);
-  ctx.fillText(eracedLine, 500, 100);
+  ctx.fillText(erasedLine, 500, 100);
 }
 
 function drawBlock(x, y, block) {
@@ -137,7 +137,7 @@ function clearRows() {
         }
       }
       y++;
-      eracedLine++;
+      erasedLine++;
     }
   }
 }
