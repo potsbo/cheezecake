@@ -108,6 +108,7 @@ document.body.onkeydown = function (e) {
 	  while(canMove(0,1)){
 		  current_y++;
 	  }
+	  fix();
 	  break;
   }
 }
