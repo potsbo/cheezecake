@@ -36,7 +36,7 @@ function newMino() {
   var id = Math.floor(Math.random() * MINOS.length);
   var mino = [];
   for (var y = 0; y < 4; y++) {
-    mino[y] = []
+    mino[y] = [];
     for (var x = 0; x < 4; x++) {
       mino[y][x] = 0;
       if (MINOS[id][y]) {
