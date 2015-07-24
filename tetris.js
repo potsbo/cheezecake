@@ -141,7 +141,7 @@ document.body.onkeydown = function (e) {
       break;
     case 80:
       alert("pause");
-      breat;
+      break;
   }
   render();
 }
