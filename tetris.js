@@ -6,8 +6,13 @@ var ctx= canvas.getContext("2d");
 var current_x = 3, current_y = 0;
 var current_mino;
 var field = [];
+var erasedLineTotal = 0;
+var score = 0;
+var clock = 1000;
+var level = 0;
+var status;
 
-for (var y = 0; y < ROWS; y++) {
+for (var y = 0; y < ROWS+1; y++) {
   field[y] = [];
   for (var x = 0; x < COLS; x++) {
     field[y][x] = 0;
@@ -16,21 +21,38 @@ for (var y = 0; y < ROWS; y++) {
 
 current_mino = newMino();
 render();
-var game = setInterval(tick, 500);
+// var game = setInterval(tick, clock);
+tick();
+
+
 
 function render() {
-  ctx.clearRect(0, 0, FIELD_W, FIELD_H);
+  //  ctx.clearRect(0, 0, FIELD_W, FIELD_H);
+  ctx.clearRect(0, 0, 600, 600);
   ctx.strokeStyle = "black";
+  ctx.strokeRect(0, 0, 300, 600);
   for (var y = 0; y < ROWS; y++) {
     for (var x = 0; x < COLS; x++) {
-      drawBlock(x, y, field[y][x]);
+      drawBlock(x, y, field[y+1][x]);
     }
   }
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
-      drawBlock(current_x + x, current_y + y, current_mino[y][x]);
+      drawBlock(current_x + x, current_y + y - 1, current_mino[y][x]);
     }
   }
+  ctx.font = "bold 30px Century Gothic"
+  ctx.fillStyle = "black";
+  ctx.fillText("LINE", 350, 100);
+  ctx.fillText(erasedLineTotal, 500, 100);
+
+  ctx.font = "bold 30px Century Gothic"
+  ctx.fillText("SCORE", 350, 150);
+  ctx.fillText(score, 500, 150);
+
+  ctx.font = "bold 30px Century Gothic"
+  ctx.fillText("LEVEL", 350, 200);
+  ctx.fillText(level, 500, 200);
 }
 
 function drawBlock(x, y, block) {
@@ -47,6 +69,8 @@ function tick() {
   } else {
     fix();
     clearRows();
+    level = Math.floor(score / 1000)
+    clock = getClock();
     current_mino = newMino();
     current_x = 3;
     current_y = 0;
@@ -57,6 +81,9 @@ function tick() {
     }
   }
   render();
+  setTimeout(function(){
+    tick();
+  }, clock);
 }
 
 function fix() {
@@ -76,7 +103,7 @@ function canMove(move_x, move_y, move_mino) {
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
       if (next_mino[y][x]) {
-        if (next_y + y >= ROWS || next_x + x < 0 || next_x + x >= COLS || field[next_y + y][next_x + x]) {
+        if (next_y + y >= ROWS + 1 || next_x + x < 0 || next_x + x >= COLS || field[next_y + y][next_x + x]) {
           return false;
         }
       }
@@ -108,19 +135,20 @@ document.body.onkeydown = function (e) {
     case 32:
       while(canMove(0,1)){
         current_y++;
+        score++;
       }
       fix();
-	  clearRows();
-      current_mino = newMino();
-      current_x = 3;
-      current_y = 0;
       break;
+    case 80:
+      alert("pause");
+      breat;
   }
   render();
 }
 
 function clearRows() {
-  for (var y = ROWS - 1; y >= 0; y--) {
+  var erasedLine = 0;
+  for (var y = ROWS; y >= 0; y--) {
     var fill = true;
     for (var x = 0; x < COLS; x++) {
       if (field[y][x] == 0) {
@@ -134,7 +162,27 @@ function clearRows() {
           field[v + 1][x] = field[v][x];
         }
       }
-      y++
+      y++;
+      erasedLine++;
+      erasedLineTotal++;
     }
   }
+  switch (erasedLine) {
+    case 1:
+      score += 40;
+      break;
+    case 2:
+      score += 100;
+      break;
+    case 3:
+      score += 300;
+      break;
+    case 4:
+      score += 1200;
+      break;
+  }
+}
+
+function getClock() {
+  return 1000 - 200 * level;
 }
