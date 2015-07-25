@@ -39,9 +39,18 @@ function newMino() {
   var valSum = 0;
   
   for(var minoNum = 0; minoNum < MINOS.length; minoNum++){
-    val[minoNum] = 1000;
-	if(formerlist[0] == minoNum)
-	  val[minoNum] = 1;
+    val[minoNum] = 100;
+	var i = 0;
+	while(formerlist[i] == minoNum){
+	  val[minoNum] /= 2;
+	  i++;
+	}
+	while(i < 10){
+	  if(formerlist[i] == minoNum){
+        val[minoNum] -= Math.floor((10-i)^1.5);
+	  }
+	  i++;
+	}
     valSum += val[minoNum];
   }
   while(true){
