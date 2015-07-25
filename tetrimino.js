@@ -62,9 +62,10 @@ function rotate(mino) {
   } else {
     for (var y = 0; y < 4; ++y) {
       rotated[y] = [];
-      for (var x = 0; x < 4; ++x) {
+      for (var x = 0; x < 3; ++x) {
         rotated[y][x] = mino[x][-y + 2];
       }
+	  rotated[y][3] = 0;
     }
   }
   return rotated;
