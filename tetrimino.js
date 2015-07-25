@@ -32,8 +32,30 @@ var MINOS = [
 
 var COLORS = ["red", "yellow", "magenta", "green", "blue", "orange", "cyan"];
 
+var formerlist = [];
+
 function newMino() {
-  var id = Math.floor(Math.random() * MINOS.length);
+  var val = [];
+  var valSum = 0;
+  
+  for(var minoNum = 0; minoNum < MINOS.length; minoNum++){
+    val[minoNum] = 1000;
+	if(formerlist[0] == minoNum)
+	  val[minoNum] = 1;
+    valSum += val[minoNum];
+  }
+  while(true){
+    var id = Math.floor(Math.random() * MINOS.length);
+	console.log(id);
+	if(Math.floor(Math.random()*valSum) < val[id]){
+	  break;
+	}
+  }
+  for(var i = 9; i > 0; i--){
+    formerlist[i] = formerlist[i-1];
+  }
+  formerlist[0] = id;
+  
   var mino = [];
   for (var y = 0; y < 4; y++) {
     mino[y] = [];
