@@ -11,6 +11,8 @@ var score = 0;
 var clock = 1000;
 var level = 0;
 var status;
+var savedata = new Object();
+savedata.highscore = 0;
 
 for (var y = 0; y < ROWS+1; y++) {
   field[y] = [];
