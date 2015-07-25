@@ -76,14 +76,16 @@ function tick() {
     current_y = 0;
     if(!canMove(0,0)){
       render();
-      clearInterval(game);
+      status = 1;
       alert("Game Over");
     }
   }
   render();
-  setTimeout(function(){
-    tick();
-  }, clock);
+  if (!status) {
+    setTimeout(function(){
+      tick();
+    }, clock);
+  }
 }
 
 function fix() {
