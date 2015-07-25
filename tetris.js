@@ -129,7 +129,7 @@ document.body.onkeydown = function (e) {
         current_y++;
       break;
     case 38:
-      rotated = rotate(current_mino);
+      rotated = rotate(rotate(rotate(current_mino)));
       if (canMove(0, 0, rotated)) {
         current_mino = rotated;
       }
