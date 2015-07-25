@@ -20,9 +20,20 @@ for (var y = 0; y < ROWS+1; y++) {
 }
 
 current_mino = newMino();
+for(var i = 0; i < 4; i++){
+  if(current_mino[0][i]){
+    if(canMove(0,1)){
+      current_y++;
+    }
+    break;
+  }
+}
 render();
-// var game = setInterval(tick, clock);
-tick();
+if (!status) {
+  setTimeout(function(){
+    tick();
+  }, clock);
+}
 
 
 
@@ -74,6 +85,14 @@ function tick() {
     current_mino = newMino();
     current_x = 3;
     current_y = 0;
+    for(var i = 0; i < 4; i++){
+      if(current_mino[0][i]){
+        if(canMove(0,1)){
+          current_y++;
+	    }
+	    break;
+      }
+	}
     if(!canMove(0,0)){
       render();
       status = 1;
