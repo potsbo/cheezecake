@@ -157,6 +157,13 @@ var Game = (function() {
       this.fix();
     }
     this.render();
+    if(!this.gameOver){
+      var obj = this;
+      var func = function () {
+        obj.tick();
+      };
+      setTimeout(func, this.clock);
+    }
   };
 
   p.fix = function(){
