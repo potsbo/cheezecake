@@ -149,9 +149,6 @@ var Game = (function() {
       this.current_mino.y++;
     } else {
       this.fix();
-      this.clearRows();
-      this.level = Math.floor(this.score / 1000);
-      this.clock = this.getClock();
     }
     this.render();
 
@@ -174,6 +171,8 @@ var Game = (function() {
     }
     this.clearRows();
     this.createNewMino();
+    this.level = Math.floor(this.score / 1000);
+    this.clock = this.getClock();
   };
 
   p.hold = function (){
@@ -181,9 +180,9 @@ var Game = (function() {
       this.current_mino.holdable = false;
       var tmp = this.current_mino;
       this.current_mino = this.holdMino || new Tetrimino();
-      this.current_mino.resetCoordinate();
+      this.current_mino.reset();
       this.holdMino = tmp;
-      this.holdMino.resetCoordinate();
+      this.holdMino.reset();
       for(var i = 0; i < 4; i++){
         if(this.current_mino.mino[0][i]){
           if(this.canMove(0,1)){

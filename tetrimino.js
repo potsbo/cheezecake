@@ -136,9 +136,20 @@ var Tetrimino = (function() {
     return this.mino;
   };
 
-  p.resetCoordinate = function(){
+  p.reset = function(){
     this.x = 3;
     this.y = 0;
+    for (var y = 0; y < 4; y++) {
+      this.mino[y] = [];
+      for (var x = 0; x < 4; x++) {
+        this.mino[y][x] = 0;
+        if (MINOS[this.id][y]) {
+          if (MINOS[this.id][y][x]) {
+            this.mino[y][x] = this.id + 1;
+          } 
+        }
+      }
+    }
   }
 
   return Tetrimino;
