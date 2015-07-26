@@ -1,4 +1,3 @@
-
 var MINOS = [
   [ // I red
     [0, 0, 0, 0],
@@ -35,121 +34,71 @@ var COLORS = ["red", "yellow", "magenta", "green", "blue", "orange", "cyan"];
 
 var formerlist = [];
 
-var Tetrimino = (function() {
-
-  var Tetrimino = function() {
-    this.mino = [];
-    this.val = [];
-    this.valSum = 0;
-    this.x = 3;
-    this.y = 0;
-    this.holdable = true;
-
-    for(var minoNum = 0; minoNum < MINOS.length; minoNum++){
-      this.val[minoNum] = 100;
-      var i = 0;
-      while(formerlist[i] == minoNum){
-        this.val[minoNum] /= 2;
-        i++;
-      }
-      while(i < 10){
-        if(formerlist[i] == minoNum){
-          this.val[minoNum] -= Math.floor((10-i)^1.5);
-        }
-        i++;
-      }
-      this.valSum += this.val[minoNum];
-
-    }
-
-    while(true){
-      this.id = Math.floor(Math.random() * MINOS.length);
-      if(Math.floor(Math.random()*this.valSum) < this.val[this.id]){
-        break;
-      }
-    }
-    for (var y = 0; y < 4; y++) {
-      this.mino[y] = [];
-      for (var x = 0; x < 4; x++) {
-        this.mino[y][x] = 0;
-        if (MINOS[this.id][y]) {
-          if (MINOS[this.id][y][x]) {
-            this.mino[y][x] = this.id + 1;
-          } 
-        }
-      }
-    }
-    for(var i = 9; i > 0; i--){
-      formerlist[i] = formerlist[i-1];
-    }
-    formerlist[0] = this.id;
-  };
-
-  var p = Tetrimino.prototype;
-
-  p.getMino = function (){
-    return this.mino;
-  };
-
-  p.rotateL = function (){
-    var rotated = [];
-    if (this.id < 2) {
-      for (var y = 0; y < 4; ++y) {
-        rotated[y] = [];
-        for (var x = 0; x < 4; ++x) {
-          rotated[y][x] = this.mino[x][3 - y];
-        }
-      }
-    } else {
-      for (var y = 0; y < 4; ++y) {
-        rotated[y] = [];
-        for (var x = 0; x < 3; ++x) {
-          rotated[y][x] = this.mino[x][2 - y];
-        }
-        rotated[y][3] = 0;
-      }
-    }
-    this.mino = rotated;
-    return this.mino;
-  };
-
-  p.rotateR = function() {
-    var rotated = [];
-    if (this.id < 2) {
-      for (var y = 0; y < 4; ++y) {
-        rotated[y] = [];
-        for (var x = 0; x < 4; ++x) {
-          rotated[y][x] = this.mino[-x+3][y];
-        }
-      }
-    } else {
-      for (var y = 0; y < 4; ++y) {
-        rotated[y] = [];
-        for (var x = 0; x < 3; ++x) {
-          rotated[y][x] = this.mino[-x+2][y];
-        }
-        rotated[y][3] = 0;
-      }
-    }
-    this.mino = rotated;
-    return this.mino;
-  };
-
-  p.reset = function(){
-    this.x = 3;
-    this.y = 0;
-    for (var y = 0; y < 4; y++) {
-      this.mino[y] = [];
-      for (var x = 0; x < 4; x++) {
-        this.mino[y][x] = 0;
-        if (MINOS[this.id][y]) {
-          if (MINOS[this.id][y][x]) {
-            this.mino[y][x] = this.id + 1;
-          } 
-        }
+function newMino() {
+  var val = [];
+  var valSum = 0;
+  
+  for(var minoNum = 0; minoNum < MINOS.length; minoNum++){
+    val[minoNum] = 1000;
+	if(formerlist[0] == minoNum)
+	  val[minoNum] = 1;
+    valSum += val[minoNum];
+  }
+  while(true){
+    var id = Math.floor(Math.random() * MINOS.length);
+	console.log(id);
+	if(Math.floor(Math.random()*valSum) < val[id]){
+	  break;
+	}
+  }
+  for(var i = 9; i > 0; i--){
+    formerlist[i] = formerlist[i-1];
+  }
+  formerlist[0] = id;
+  
+  var mino = [];
+  for (var y = 0; y < 4; y++) {
+    mino[y] = [];
+    for (var x = 0; x < 4; x++) {
+      mino[y][x] = 0;
+      if (MINOS[id][y]) {
+        if (MINOS[id][y][x]) {
+          mino[y][x] = id + 1;
+        } 
       }
     }
   }
+  return mino;
+}
 
-  return Tetrimino;
-})();
+function rotate(mino) {
+  var rotated = [];
+  var minoId = checkMinoType(mino);
+  if (minoId <= 2) {
+    for (var y = 0; y < 4; ++y) {
+      rotated[y] = [];
+      for (var x = 0; x < 4; ++x) {
+        rotated[y][x] = mino[x][-y + 3];
+      }
+    }
+  } else {
+    for (var y = 0; y < 4; ++y) {
+      rotated[y] = [];
+      for (var x = 0; x < 4; ++x) {
+        rotated[y][x] = mino[x][-y + 2];
+      }
+    }
+  }
+  return rotated;
+}
+
+function checkMinoType(mino) {
+  for (var y = 0; y < 4; y++) {
+    if (mino[y]){
+      for (var x = 0; x < 4; x++) {
+        if (mino[y][x] !== 0)
+          return mino[y][x];
+      }
+    }
+  }
+}
