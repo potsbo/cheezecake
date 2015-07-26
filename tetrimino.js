@@ -37,8 +37,7 @@ var formerlist = [];
 
 var Tetrimino = (function() {
 
-  var Tetrimino = function(request) {
-    this.id;
+  var Tetrimino = function() {
     this.mino = [];
     this.val = [];
     this.valSum = 0;
