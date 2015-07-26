@@ -61,8 +61,8 @@ var Tetrimino = (function() {
     }
   
     while(true){
-      var id = Math.floor(Math.random() * MINOS.length);
-  	  if(Math.floor(Math.random()*this.valSum) < this.val[id]){
+      this.id = Math.floor(Math.random() * MINOS.length);
+  	  if(Math.floor(Math.random()*this.valSum) < this.val[this.id]){
   	    break;
   	  }
     }
@@ -70,9 +70,9 @@ var Tetrimino = (function() {
       this.mino[y] = [];
       for (var x = 0; x < 4; x++) {
         this.mino[y][x] = 0;
-        if (MINOS[id][y]) {
-          if (MINOS[id][y][x]) {
-            this.mino[y][x] = id + 1;
+        if (MINOS[this.id][y]) {
+          if (MINOS[this.id][y][x]) {
+            this.mino[y][x] = this.id + 1;
           } 
         }
       }
@@ -80,7 +80,7 @@ var Tetrimino = (function() {
     for(var i = 9; i > 0; i--){
       formerlist[i] = formerlist[i-1];
     }
-    formerlist[0] = id;
+    formerlist[0] = this.id;
   };
 
   var p = Tetrimino.prototype;
@@ -91,8 +91,7 @@ var Tetrimino = (function() {
 
   p.rotateL = function (){
     var rotated = [];
-    var minoId = checkMinoType(this.mino);
-    if (minoId <= 2) {
+    if (this.id <= 2) {
       for (var y = 0; y < 4; ++y) {
         rotated[y] = [];
         for (var x = 0; x < 4; ++x) {
@@ -114,8 +113,7 @@ var Tetrimino = (function() {
 
   p.rotateR = function() {
     var rotated = [];
-    var minoId = checkMinoType(this.mino);
-    if (minoId <= 2) {
+    if (this.id <= 2) {
       for (var y = 0; y < 4; ++y) {
         rotated[y] = [];
         for (var x = 0; x < 4; ++x) {
@@ -137,15 +135,3 @@ var Tetrimino = (function() {
 
   return Tetrimino;
 })();
-
-
-function checkMinoType(mino) {
-  for (var y = 0; y < 4; y++) {
-    if (mino[y]){
-      for (var x = 0; x < 4; x++) {
-        if (mino[y][x] !== 0)
-          return mino[y][x];
-      }
-    }
-  }
-}
