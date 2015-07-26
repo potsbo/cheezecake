@@ -22,7 +22,7 @@ for (var y = 0; y < ROWS+1; y++) {
 current_mino = newMino();
 holdable = true;
 for(var i = 0; i < 4; i++){
-  if(current_mino[0][i]){
+  if(current_mino.mino[0][i]){
     if(canMove(0,1)){
       current_y++;
     }
@@ -51,6 +51,7 @@ function render() {
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
       drawBlock(current_x + x, current_y + y - 1, current_mino[y][x]);
+      drawBlock(current_x + x, current_y + y - 1, current_mino.mino[y][x]);
     }
   }
   ctx.font = "bold 30px Century Gothic"
@@ -83,12 +84,12 @@ function tick() {
     clearRows();
     level = Math.floor(score / 1000)
     clock = getClock();
-    current_mino = newMino();
     holdable = true;
+    current_mino = new Tetrimino();
     current_x = 3;
     current_y = 0;
     for(var i = 0; i < 4; i++){
-      if(current_mino[0][i]){
+      if(current_mino.mino[0][i]){
         if(canMove(0,1)){
           current_y++;
 	    }
@@ -112,8 +113,8 @@ function tick() {
 function fix() {
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
-      if (current_mino[y][x]) {
-        field[current_y + y][current_x + x] = current_mino[y][x];
+      if (current_mino.mino[y][x]) {
+        field[current_y + y][current_x + x] = current_mino.mino[y][x];
       }
     }
   }
@@ -125,7 +126,7 @@ function canMove(move_x, move_y, move_mino) {
   var next_mino = move_mino || current_mino;
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
-      if (next_mino[y][x]) {
+      if (next_mino.mino[y][x]) {
         if (next_y + y >= ROWS + 1 || next_x + x < 0 || next_x + x >= COLS || field[next_y + y][next_x + x]) {
           return false;
         }
@@ -150,22 +151,19 @@ document.body.onkeydown = function (e) {
         current_y++;
       break;
     case 38:
-      rotated = rotateR(current_mino);
-      if (canMove(0, 0, rotated)) {
-        current_mino = rotated;
-      }
+      current_mino.rotateR();
+      if (!canMove(0, 0))
+          current_mino.rotateL();
       break;
     case 81: // q
-      rotated = rotateL(current_mino);
-      if (canMove(0, 0, rotated)) {
-        current_mino = rotated;
-      }
+      current_mino.rotateL();
+      if (!canMove(0, 0))
+          current_mino.rotateR();
       break;
     case 74: // j
-      rotated = rotateR(current_mino);
-      if (canMove(0, 0, rotated)) {
-        current_mino = rotated;
-      }
+      current_mino.rotateR();
+      if (!canMove(0, 0))
+          current_mino.rotateL();
       break;
     case 32:
       while(canMove(0,1)){
