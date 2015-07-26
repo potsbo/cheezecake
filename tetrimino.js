@@ -42,6 +42,8 @@ var Tetrimino = (function() {
     this.mino = [];
     this.val = [];
     this.valSum = 0;
+    this.x = 3;
+    this.y = 0;
     
     for(var minoNum = 0; minoNum < MINOS.length; minoNum++){
       this.val[minoNum] = 100;
@@ -91,7 +93,7 @@ var Tetrimino = (function() {
 
   p.rotateL = function (){
     var rotated = [];
-    if (this.id <= 2) {
+    if (this.id < 2) {
       for (var y = 0; y < 4; ++y) {
         rotated[y] = [];
         for (var x = 0; x < 4; ++x) {
@@ -113,7 +115,7 @@ var Tetrimino = (function() {
 
   p.rotateR = function() {
     var rotated = [];
-    if (this.id <= 2) {
+    if (this.id < 2) {
       for (var y = 0; y < 4; ++y) {
         rotated[y] = [];
         for (var x = 0; x < 4; ++x) {
@@ -131,7 +133,7 @@ var Tetrimino = (function() {
     }
     this.mino = rotated;
     return this.mino;
-  }
+  };
 
   return Tetrimino;
 })();

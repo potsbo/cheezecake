@@ -3,7 +3,6 @@ var COLS = 10, ROWS = 20;
 var BLOCK_W = FIELD_W / COLS, BLOCK_H = FIELD_H / ROWS;
 var canvas = document.getElementById("field");
 var ctx= canvas.getContext("2d");
-var current_x = 3, current_y = 0;
 var current_mino;
 var field = [];
 var erasedLineTotal = 0;
@@ -23,7 +22,7 @@ current_mino = new Tetrimino();
 for(var i = 0; i < 4; i++){
   if(current_mino.mino[0][i]){
     if(canMove(0,1)){
-      current_y++;
+      current_mino.y++;
     }
     break;
   }
@@ -49,7 +48,7 @@ function render() {
   }
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
-      drawBlock(current_x + x, current_y + y - 1, current_mino.mino[y][x]);
+      drawBlock(current_mino.x + x, current_mino.y + y - 1, current_mino.mino[y][x]);
     }
   }
   ctx.font = "bold 30px Century Gothic"
@@ -76,19 +75,17 @@ function drawBlock(x, y, block) {
 
 function tick() {
   if (canMove(0, 1)) {
-    current_y++;
+    current_mino.y++;
   } else {
     fix();
     clearRows();
     level = Math.floor(score / 1000)
     clock = getClock();
     current_mino = new Tetrimino();
-    current_x = 3;
-    current_y = 0;
     for(var i = 0; i < 4; i++){
       if(current_mino.mino[0][i]){
         if(canMove(0,1)){
-          current_y++;
+          current_mino.y++;
 	    }
 	    break;
       }
@@ -111,15 +108,15 @@ function fix() {
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
       if (current_mino.mino[y][x]) {
-        field[current_y + y][current_x + x] = current_mino.mino[y][x];
+        field[current_mino.y + y][current_mino.x + x] = current_mino.mino[y][x];
       }
     }
   }
 }
 
 function canMove(move_x, move_y, move_mino) {
-  var next_x = current_x + move_x;
-  var next_y = current_y + move_y;
+  var next_x = current_mino.x + move_x;
+  var next_y = current_mino.y + move_y;
   var next_mino = move_mino || current_mino;
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
@@ -137,15 +134,15 @@ document.body.onkeydown = function (e) {
   switch (e.keyCode) {
     case 37:
       if (canMove(-1, 0))
-        current_x--;
+        current_mino.x--;
       break;
     case 39:
       if (canMove(1, 0))
-        current_x++;
+        current_mino.x++;
       break;
     case 40:
       if (canMove(0, 1))
-        current_y++;
+        current_mino.y++;
       break;
     case 38:
       current_mino.rotateR();
@@ -164,7 +161,7 @@ document.body.onkeydown = function (e) {
       break;
     case 32:
       while(canMove(0,1)){
-        current_y++;
+        current_mino.y++;
         score++;
       }
       fix();
