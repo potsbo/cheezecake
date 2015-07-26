@@ -44,7 +44,8 @@ var Tetrimino = (function() {
     this.valSum = 0;
     this.x = 3;
     this.y = 0;
-    
+    this.holdable = true;
+
     for(var minoNum = 0; minoNum < MINOS.length; minoNum++){
       this.val[minoNum] = 100;
       var i = 0;
@@ -53,20 +54,20 @@ var Tetrimino = (function() {
         i++;
       }
       while(i < 10){
-  	    if(formerlist[i] == minoNum){
+        if(formerlist[i] == minoNum){
           this.val[minoNum] -= Math.floor((10-i)^1.5);
-  	    }
-  	  i++;
-  	  }
+        }
+        i++;
+      }
       this.valSum += this.val[minoNum];
 
     }
-  
+
     while(true){
       this.id = Math.floor(Math.random() * MINOS.length);
-  	  if(Math.floor(Math.random()*this.valSum) < this.val[this.id]){
-  	    break;
-  	  }
+      if(Math.floor(Math.random()*this.valSum) < this.val[this.id]){
+        break;
+      }
     }
     for (var y = 0; y < 4; y++) {
       this.mino[y] = [];
@@ -128,7 +129,7 @@ var Tetrimino = (function() {
         for (var x = 0; x < 3; ++x) {
           rotated[y][x] = this.mino[-x+2][y];
         }
-  	  rotated[y][3] = 0;
+        rotated[y][3] = 0;
       }
     }
     this.mino = rotated;
