@@ -20,6 +20,7 @@ for (var y = 0; y < ROWS+1; y++) {
 }
 
 current_mino = newMino();
+holdable = true;
 for(var i = 0; i < 4; i++){
   if(current_mino[0][i]){
     if(canMove(0,1)){
@@ -83,6 +84,7 @@ function tick() {
     level = Math.floor(score / 1000)
     clock = getClock();
     current_mino = newMino();
+    holdable = true;
     current_x = 3;
     current_y = 0;
     for(var i = 0; i < 4; i++){
@@ -175,6 +177,9 @@ document.body.onkeydown = function (e) {
     case 80:
       alert("pause");
       break;
+    case 79:
+      current_mino = hold(current_mino);
+      break;
   }
   render();
 }
@@ -213,6 +218,29 @@ function clearRows() {
     case 4:
       score += 1200;
       break;
+  }
+}
+
+var holdable = true;
+var holdMino = newMino();
+function hold(current_mino){
+  if(holdable){
+    holdable = false;
+    tmp = holdMino;
+    holdMino = current_mino;
+      current_x = 3;
+      current_y = 0;
+      for(var i = 0; i < 4; i++){
+        if(tmp[0][i]){
+          if(canMove(0,1)){
+            current_y++;
+          }
+        break;
+        }
+      }
+    return tmp;
+  }else{
+    return current_mino;
   }
 }
 
