@@ -112,6 +112,23 @@ var Game = (function() {
     }
   };
 
+  p.createNewMino = function(){
+    this.current_mino = new Tetrimino();
+    for(var i = 0; i < 4; i++){
+      if(this.current_mino.mino[0][i]){
+        if(this.canMove(0,1)){
+          this.current_mino.y++;
+        }
+        break;
+      }
+    }
+    if(!this.canMove(0,0)){
+      this.render();
+      gameOver = true;
+      alert("Game Over");
+    }
+  };
+
   p.tick = function(){
     if (this.canMove(0, 1)) {
       this.current_mino.y++;
@@ -120,20 +137,6 @@ var Game = (function() {
       this.clearRows();
       this.level = Math.floor(this.score / 1000);
       this.clock = this.getClock();
-      this.current_mino = new Tetrimino();
-      for(var i = 0; i < 4; i++){
-        if(this.current_mino.mino[0][i]){
-          if(this.canMove(0,1)){
-            this.current_mino.y++;
-          }
-          break;
-        }
-      }
-      if(!this.canMove(0,0)){
-        this.render();
-        gameOver = true;
-        alert("Game Over");
-      }
     }
     this.render();
 
@@ -154,6 +157,7 @@ var Game = (function() {
         }
       }
     }
+    this.createNewMino();
   };
 
   p.hold = function (){
@@ -178,15 +182,7 @@ var Game = (function() {
   };
 
   p.run = function (){
-    this.current_mino = new Tetrimino();
-    for(var i = 0; i < 4; i++){
-      if(this.current_mino.mino[0][i]){
-        if(this.canMove(0,1)){
-          this.current_mino.y++;
-        }
-        break;
-      }
-    }
+    this.createNewMino();
     this.render();
     var obj = this;
     var func = function () {
