@@ -14,6 +14,14 @@ var status;
 var savedata = new Object();
 savedata.highscore = 0;
 
+if (window.localStorage) {
+
+  var local_storage = window.localStorage;
+  if (window.localStorage.getItem("highscore")) {
+    savedata.highscore = window.localStorage.getItem("highscore");
+  }
+}
+
 for (var y = 0; y < ROWS+1; y++) {
   field[y] = [];
   for (var x = 0; x < COLS; x++) {
@@ -55,6 +63,10 @@ function render() {
   ctx.font = "bold 30px Century Gothic"
   ctx.fillText("LEVEL", 350, 200);
   ctx.fillText(level, 500, 200);
+
+  ctx.font = "bold 20px Century Gothic"
+  ctx.fillText("HIGH SCORE", 350, 250);
+  ctx.fillText(savedata.highscore, 500, 280);
 }
 
 function drawBlock(x, y, block) {
@@ -80,6 +92,9 @@ function tick() {
       render();
       status = 1;
       alert("Game Over");
+      if (window.localStorage) {
+        window.localStorage.setItem("highscore", score)
+      }
     }
   }
   render();
