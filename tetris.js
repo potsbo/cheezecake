@@ -1,243 +1,277 @@
-var FIELD_W = 300, FIELD_H = 600;
-var COLS = 10, ROWS = 20;
-var BLOCK_W = FIELD_W / COLS, BLOCK_H = FIELD_H / ROWS;
-var canvas = document.getElementById("field");
-var ctx= canvas.getContext("2d");
-var current_mino;
-var field = [];
-var erasedLineTotal = 0;
-var score = 0;
-var clock = 1000;
-var level = 0;
-var status;
+var Game = (function() {
+  var FIELD_W = 300, FIELD_H = 600;
+  var COLS = 10, ROWS = 20;
+  var BLOCK_W = FIELD_W / COLS, BLOCK_H = FIELD_H / ROWS;
 
-for (var y = 0; y < ROWS+1; y++) {
-  field[y] = [];
-  for (var x = 0; x < COLS; x++) {
-    field[y][x] = 0;
-  }
-}
+  var Game = function(){
+    this.score = 0;
+    this.clock = 1000;
+    this.level = 0;
+    this.map = [];
+    this.current_mino = new Tetrimino();
+    this.holdMino = new Tetrimino();
+    this.erasedLineTotal = 0;
+    this.gameOver = false;
+    this.canvas = document.getElementById("field");
+    this.ctx= this.canvas.getContext("2d");
 
-current_mino = new Tetrimino();
-holdable = true;
-for(var i = 0; i < 4; i++){
-  if(current_mino.mino[0][i]){
-    if(canMove(0,1)){
-      current_mino.y++;
-    }
-    break;
-  }
-}
-render();
-if (!status) {
-  setTimeout(function(){
-    tick();
-  }, clock);
-}
-
-
-
-function render() {
-  //  ctx.clearRect(0, 0, FIELD_W, FIELD_H);
-  ctx.clearRect(0, 0, 600, 600);
-  ctx.strokeStyle = "black";
-  ctx.strokeRect(0, 0, 300, 600);
-  for (var y = 0; y < ROWS; y++) {
-    for (var x = 0; x < COLS; x++) {
-      drawBlock(x, y, field[y+1][x]);
-    }
-  }
-  for (var y = 0; y < 4; y++) {
-    for (var x = 0; x < 4; x++) {
-      drawBlock(current_mino.x + x, current_mino.y + y - 1, current_mino.mino[y][x]);
-    }
-  }
-  ctx.font = "bold 30px Century Gothic"
-  ctx.fillStyle = "black";
-  ctx.fillText("LINE", 350, 100);
-  ctx.fillText(erasedLineTotal, 500, 100);
-
-  ctx.font = "bold 30px Century Gothic"
-  ctx.fillText("SCORE", 350, 150);
-  ctx.fillText(score, 500, 150);
-
-  ctx.font = "bold 30px Century Gothic"
-  ctx.fillText("LEVEL", 350, 200);
-  ctx.fillText(level, 500, 200);
-}
-
-function drawBlock(x, y, block) {
-  if (block) {
-    ctx.fillStyle = COLORS[block - 1];
-    ctx.fillRect(x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1)
-    ctx.strokeRect(x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1);
-  }
-}
-
-function tick() {
-  if (canMove(0, 1)) {
-    current_mino.y++;
-  } else {
-    fix();
-    clearRows();
-    level = Math.floor(score / 1000)
-    clock = getClock();
-    holdable = true;
-    current_mino = new Tetrimino();
-    for(var i = 0; i < 4; i++){
-      if(current_mino.mino[0][i]){
-        if(canMove(0,1)){
-          current_mino.y++;
-	    }
-	    break;
-      }
-	}
-    if(!canMove(0,0)){
-      render();
-      status = 1;
-      alert("Game Over");
-    }
-  }
-  render();
-  if (!status) {
-    setTimeout(function(){
-      tick();
-    }, clock);
-  }
-}
-
-function fix() {
-  for (var y = 0; y < 4; y++) {
-    for (var x = 0; x < 4; x++) {
-      if (current_mino.mino[y][x]) {
-        field[current_mino.y + y][current_mino.x + x] = current_mino.mino[y][x];
+    for (var y = 0; y < ROWS+1; y++) {
+      this.map[y] = [];
+      for (var x = 0; x < COLS; x++) {
+        this.map[y][x] = 0;
       }
     }
-  }
-}
+  };
 
-function canMove(move_x, move_y, move_mino) {
-  var next_x = current_mino.x + move_x;
-  var next_y = current_mino.y + move_y;
-  var next_mino = move_mino || current_mino;
-  for (var y = 0; y < 4; y++) {
-    for (var x = 0; x < 4; x++) {
-      if (next_mino.mino[y][x]) {
-        if (next_y + y >= ROWS + 1 || next_x + x < 0 || next_x + x >= COLS || field[next_y + y][next_x + x]) {
-          return false;
+  var p = Game.prototype;
+
+  p.render = function (){
+    this.ctx.clearRect(0, 0, 600, 600);
+    this.ctx.strokeStyle = "black";
+    this.ctx.strokeRect(0, 0, 300, 600);
+    for (var y = 0; y < ROWS; y++) {
+      for (var x = 0; x < COLS; x++) {
+        this.drawBlock(x, y, this.map[y+1][x]);
+      }
+    }
+    for (var y = 0; y < 4; y++) {
+      for (var x = 0; x < 4; x++) {
+        this.drawBlock(this.current_mino.x + x, this.current_mino.y + y - 1, this.current_mino.mino[y][x]);
+      }
+    }
+    this.ctx.font = "bold 30px Century Gothic";
+    this.ctx.fillStyle = "black";
+    this.ctx.fillText("LINE", 350, 100);
+    this.ctx.fillText(this.erasedLineTotal, 500, 100);
+
+    this.ctx.font = "bold 30px Century Gothic";
+    this.ctx.fillText("SCORE", 350, 150);
+    this.ctx.fillText(this.score, 500, 150);
+
+    this.ctx.font = "bold 30px Century Gothic";
+    this.ctx.fillText("LEVEL", 350, 200);
+    this.ctx.fillText(this.level, 500, 200);
+  };
+
+  p.canMove = function (move_x, move_y, move_mino) {
+    var next_x = this.current_mino.x + move_x;
+    var next_y = this.current_mino.y + move_y;
+    var next_mino = move_mino || this.current_mino;
+    for (var y = 0; y < 4; y++) {
+      for (var x = 0; x < 4; x++) {
+        if (next_mino.mino[y][x]) {
+          if (next_y + y >= ROWS + 1 || next_x + x < 0 || next_x + x >= COLS || this.map[next_y + y][next_x + x]) {
+            return false;
+          }
         }
       }
     }
-  }
-  return true;
-}
+    return true;
+  };
+
+  p.drawBlock = function(x, y, block) {
+    if (block) {
+      this.ctx.fillStyle = COLORS[block - 1];
+      this.ctx.fillRect(x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1);
+      this.ctx.strokeRect(x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1);
+    }
+  };
+
+  p.clearRows = function() {
+    var erasedLine = 0;
+    for (var y = ROWS; y >= 0; y--) {
+      var fill = true;
+      for (var x = 0; x < COLS; x++) {
+        if (this.map[y][x] == 0) {
+          fill = false;
+          break;
+        }
+      }
+      if (fill) {
+        for (var v = y - 1; v >= 0; v--) {
+          for (var x = 0; x < COLS; x++) {
+            this.map[v + 1][x] = this.map[v][x];
+          }
+        }
+        y++;
+        erasedLine++;
+        this.erasedLineTotal++;
+      }
+    }
+    switch (erasedLine) {
+      case 1:
+        this.score += 40;
+        break;
+      case 2:
+        this.score += 100;
+        break;
+      case 3:
+        this.score += 300;
+        break;
+      case 4:
+        this.score += 1200;
+        break;
+    }
+  };
+
+  p.tick = function(){
+    if (this.canMove(0, 1)) {
+      this.current_mino.y++;
+    } else {
+      this.fix();
+      this.clearRows();
+      this.level = Math.floor(this.score / 1000);
+      this.clock = this.getClock();
+      this.current_mino = new Tetrimino();
+      for(var i = 0; i < 4; i++){
+        if(this.current_mino.mino[0][i]){
+          if(this.canMove(0,1)){
+            this.current_mino.y++;
+          }
+          break;
+        }
+      }
+      if(!this.canMove(0,0)){
+        this.render();
+        gameOver = true;
+        alert("Game Over");
+      }
+    }
+    this.render();
+
+    if (!this.gameOver) {
+      var obj = this;
+      var func = function () {
+        obj.tick();
+      };
+      setTimeout(func, this.clock);
+    }
+  };
+
+  p.fix = function(){
+    for (var y = 0; y < 4; y++) {
+      for (var x = 0; x < 4; x++) {
+        if (this.current_mino.mino[y][x]) {
+          this.map[this.current_mino.y + y][this.current_mino.x + x] = this.current_mino.mino[y][x];
+        }
+      }
+    }
+  };
+
+  p.hold = function (){
+    if(this.current_mino.holdable){
+      this.current_mino.holdable = false;
+      var tmp = this.current_mino;
+      this.current_mino = this.holdMino;
+      this.holdMino = tmp;
+      for(var i = 0; i < 4; i++){
+        if(this.current_mino.mino[0][i]){
+          if(this.canMove(0,1)){
+            this.current_mino.y++;
+          }
+          break;
+        }
+      }
+    }
+  };
+
+  p.getClock = function(){
+    return 1000 - 200 * this.level;
+  };
+
+  p.run = function (){
+    this.current_mino = new Tetrimino();
+    for(var i = 0; i < 4; i++){
+      if(this.current_mino.mino[0][i]){
+        if(this.canMove(0,1)){
+          this.current_mino.y++;
+        }
+        break;
+      }
+    }
+    this.render();
+    var obj = this;
+    var func = function () {
+      obj.tick();
+    };
+    setTimeout(func, this.clock);
+  };
+
+  p.rotateL = function (){
+    this.current_mino.rotateL();
+    if (!this.canMove(0, 0))
+      this.current_mino.rotateR();
+  };
+
+  p.rotateR = function (){
+    this.current_mino.rotateR();
+    if (!this.canMove(0, 0))
+      this.current_mino.rotateL();
+  };
+
+  p.moveLeft = function (){
+    if (this.canMove(-1, 0))
+      this.current_mino.x--;
+  };
+
+  p.moveRight = function (){
+    if (this.canMove(-1, 0))
+      this.current_mino.x--;
+  };
+
+  p.move = function(move_x, move_y){
+    var x = move_x || 0;
+    var y = move_y || 0;
+    if (this.canMove(x, y)){
+      this.current_mino.x += x;
+      this.current_mino.y += y;
+    }
+  };
+
+  p.hardDrop = function (){
+    while(this.canMove(0,1)){
+      this.current_mino.y++;
+      this.score++;
+    }
+    this.fix();
+  };
+
+  return Game;
+})();
+
+var game = new Game();
+game.run();
 
 document.body.onkeydown = function (e) {
   switch (e.keyCode) {
     case 37:
-      if (canMove(-1, 0))
-        current_mino.x--;
+      game.move(-1, 0);
       break;
     case 39:
-      if (canMove(1, 0))
-        current_mino.x++;
+      game.move(1, 0);
       break;
     case 40:
-      if (canMove(0, 1))
-        current_mino.y++;
+      game.move(0, 1);
       break;
     case 38:
-      current_mino.rotateR();
-      if (!canMove(0, 0))
-          current_mino.rotateL();
+      game.rotateR();
       break;
     case 81: // q
-      current_mino.rotateL();
-      if (!canMove(0, 0))
-          current_mino.rotateR();
+      game.rotateL();
       break;
     case 74: // j
-      current_mino.rotateR();
-      if (!canMove(0, 0))
-          current_mino.rotateL();
+      game.rotateR();
       break;
     case 32:
-      while(canMove(0,1)){
-        current_mino.y++;
-        score++;
-      }
-      fix();
+      game.hardDrop();
       break;
     case 80:
       alert("pause");
       break;
     case 79:
-      current_mino = hold(current_mino);
+      game.hold();
       break;
   }
-  render();
+  game.render();
 }
 
-function clearRows() {
-  var erasedLine = 0;
-  for (var y = ROWS; y >= 0; y--) {
-    var fill = true;
-    for (var x = 0; x < COLS; x++) {
-      if (field[y][x] == 0) {
-        fill = false;
-        break;
-      }
-    }
-    if (fill) {
-      for (var v = y - 1; v >= 0; v--) {
-        for (var x = 0; x < COLS; x++) {
-          field[v + 1][x] = field[v][x];
-        }
-      }
-      y++;
-      erasedLine++;
-      erasedLineTotal++;
-    }
-  }
-  switch (erasedLine) {
-    case 1:
-      score += 40;
-      break;
-    case 2:
-      score += 100;
-      break;
-    case 3:
-      score += 300;
-      break;
-    case 4:
-      score += 1200;
-      break;
-  }
-}
-
-var holdable = true;
-var holdMino = new Tetrimino();
-function hold(current_mino){
-  if(holdable){
-    holdable = false;
-    tmp = holdMino;
-    holdMino = current_mino;
-      current_x = 3;
-      current_y = 0;
-      for(var i = 0; i < 4; i++){
-        if(tmp.mino[0][i]){
-          if(canMove(0,1)){
-            current_y++;
-          }
-        break;
-        }
-      }
-    return tmp;
-  }else{
-    return current_mino;
-  }
-}
-
-function getClock() {
-  return 1000 - 200 * level;
-}
