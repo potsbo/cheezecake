@@ -5,6 +5,11 @@ var Game = (function() {
   var HOLD_W = BLOCK_W * 6, HOLD_H = BLOCK_H * 6;
 
   var Game = function(){
+    this.init();
+  };
+
+  var p = Game.prototype;
+  p.init = function(){
     this.score = 0;
     this.clock = 1000;
     this.level = 0;
@@ -21,9 +26,7 @@ var Game = (function() {
         this.map[y][x] = 0;
       }
     }
-  };
-
-  var p = Game.prototype;
+  }
 
   p.render = function (){
     this.ctx.clearRect(HOLD_W, 0, FIELD_W *2, FIELD_H);
@@ -140,7 +143,10 @@ var Game = (function() {
     if(!this.canMove(0,0)){
       this.render();
       this.gameOver = true;
-      alert("Game Over");
+      var result = confirm("GAME OVER\n restart?");
+      if(result){
+        this.restart();
+      }
     }
   };
 
@@ -151,15 +157,6 @@ var Game = (function() {
       this.fix();
     }
     this.render();
-
-    // if (!this.gameOver) {
-    //     console.log(this.gameOver);
-    //   var obj = this;
-    //   var func = function () {
-    //     obj.tick();
-    //   };
-    //   setTimeout(func, this.clock);
-    // }
   };
 
   p.fix = function(){
@@ -241,11 +238,16 @@ var Game = (function() {
     this.fix();
   };
 
+  p.restart = function(){
+    if(this.gameOver){
+      console.log("restarting");
+      this.init();
+      this.run();
+    }
+  }
+
   return Game;
 })();
-
-var game = new Game();
-game.run();
 
 document.body.onkeydown = function (e) {
   switch (e.keyCode) {
@@ -276,7 +278,12 @@ document.body.onkeydown = function (e) {
     case 79: // o
       game.hold();
       break;
+    case 78: // n
+      game.restart();
+      break;
   }
   game.render();
 }
 
+var game = new Game();
+game.run();
