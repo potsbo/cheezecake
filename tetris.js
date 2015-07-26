@@ -19,7 +19,7 @@ for (var y = 0; y < ROWS+1; y++) {
   }
 }
 
-current_mino = newMino();
+current_mino = new Tetrimino();
 holdable = true;
 for(var i = 0; i < 4; i++){
   if(current_mino.mino[0][i]){
@@ -50,7 +50,6 @@ function render() {
   }
   for (var y = 0; y < 4; y++) {
     for (var x = 0; x < 4; x++) {
-      drawBlock(current_x + x, current_y + y - 1, current_mino[y][x]);
       drawBlock(current_x + x, current_y + y - 1, current_mino.mino[y][x]);
     }
   }
@@ -220,7 +219,7 @@ function clearRows() {
 }
 
 var holdable = true;
-var holdMino = newMino();
+var holdMino = new Tetrimino();
 function hold(current_mino){
   if(holdable){
     holdable = false;
