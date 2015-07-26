@@ -228,16 +228,16 @@ game.run();
 
 document.body.onkeydown = function (e) {
   switch (e.keyCode) {
-    case 37:
+    case 37: // left arrow
       game.move(-1, 0);
       break;
-    case 39:
+    case 39: // riht arrow
       game.move(1, 0);
       break;
-    case 40:
+    case 40: // down arrow
       game.move(0, 1);
       break;
-    case 38:
+    case 38: // up arrow
       game.rotateR();
       break;
     case 81: // q
@@ -246,13 +246,13 @@ document.body.onkeydown = function (e) {
     case 74: // j
       game.rotateR();
       break;
-    case 32:
+    case 32: // space 
       game.hardDrop();
       break;
-    case 80:
+    case 80: // p
       alert("pause");
       break;
-    case 79:
+    case 79: // o
       game.hold();
       break;
   }
