@@ -148,7 +148,19 @@ document.body.onkeydown = function (e) {
         current_y++;
       break;
     case 38:
-      rotated = rotate(rotate(rotate(current_mino)));
+      rotated = rotateR(current_mino);
+      if (canMove(0, 0, rotated)) {
+        current_mino = rotated;
+      }
+      break;
+    case 81: // q
+      rotated = rotateL(current_mino);
+      if (canMove(0, 0, rotated)) {
+        current_mino = rotated;
+      }
+      break;
+    case 74: // j
+      rotated = rotateR(current_mino);
       if (canMove(0, 0, rotated)) {
         current_mino = rotated;
       }
