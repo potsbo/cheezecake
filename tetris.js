@@ -52,7 +52,7 @@ var Game = (function() {
     this.ctx.fillText(this.level, HOLD_W + FIELD_W + 200, 200);
 
   };
-  
+
   p.renderHold = function(){
     this.ctx.clearRect(0, 0, HOLD_W, HOLD_H);
     for (var y = 0; y < 4; y++) {
@@ -139,7 +139,7 @@ var Game = (function() {
     }
     if(!this.canMove(0,0)){
       this.render();
-      gameOver = true;
+      this.gameOver = true;
       alert("Game Over");
     }
   };
@@ -152,27 +152,30 @@ var Game = (function() {
     }
     this.render();
 
-    if (!this.gameOver) {
-      var obj = this;
-      var func = function () {
-        obj.tick();
-      };
-      setTimeout(func, this.clock);
-    }
+    // if (!this.gameOver) {
+    //     console.log(this.gameOver);
+    //   var obj = this;
+    //   var func = function () {
+    //     obj.tick();
+    //   };
+    //   setTimeout(func, this.clock);
+    // }
   };
 
   p.fix = function(){
-    for (var y = 0; y < 4; y++) {
-      for (var x = 0; x < 4; x++) {
-        if (this.current_mino.mino[y][x]) {
-          this.map[this.current_mino.y + y][this.current_mino.x + x] = this.current_mino.mino[y][x];
+    if(!this.gameOver){
+      for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 4; x++) {
+          if (this.current_mino.mino[y][x]) {
+            this.map[this.current_mino.y + y][this.current_mino.x + x] = this.current_mino.mino[y][x];
+          }
         }
       }
+      this.clearRows();
+      this.createNewMino();
+      this.level = Math.floor(this.score / 1000);
+      this.clock = this.getClock();
     }
-    this.clearRows();
-    this.createNewMino();
-    this.level = Math.floor(this.score / 1000);
-    this.clock = this.getClock();
   };
 
   p.hold = function (){
