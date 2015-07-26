@@ -203,7 +203,7 @@ var Game = (function() {
   };
 
   p.getClock = function(){
-    return 1000 - 200 * this.level;
+    return 1000 / (this.level + 1) + 100;
   };
 
   p.run = function (){
