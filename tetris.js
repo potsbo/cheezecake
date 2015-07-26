@@ -2,6 +2,7 @@ var Game = (function() {
   var FIELD_W = 300, FIELD_H = 600;
   var COLS = 10, ROWS = 20;
   var BLOCK_W = FIELD_W / COLS, BLOCK_H = FIELD_H / ROWS;
+  var HOLD_W = BLOCK_W * 6, HOLD_H = BLOCK_H * 6;
 
   var Game = function(){
     this.score = 0;
@@ -9,7 +10,6 @@ var Game = (function() {
     this.level = 0;
     this.map = [];
     this.current_mino = new Tetrimino();
-    this.holdMino = new Tetrimino();
     this.erasedLineTotal = 0;
     this.gameOver = false;
     this.canvas = document.getElementById("field");
@@ -26,9 +26,10 @@ var Game = (function() {
   var p = Game.prototype;
 
   p.render = function (){
-    this.ctx.clearRect(0, 0, FIELD_W *2, FIELD_H);
+    this.ctx.clearRect(HOLD_W, 0, FIELD_W *2, FIELD_H);
     this.ctx.strokeStyle = "black";
-    this.ctx.strokeRect(0, 0, FIELD_W, FIELD_H);
+    this.ctx.strokeRect(HOLD_W, 0, FIELD_W, FIELD_H);
+    this.ctx.strokeRect(0, 0, HOLD_W, 200);
     for (var y = 0; y < ROWS; y++) {
       for (var x = 0; x < COLS; x++) {
         this.drawBlock(x, y, this.map[y+1][x]);
@@ -41,15 +42,25 @@ var Game = (function() {
     }
     this.ctx.font = "bold 30px Century Gothic";
     this.ctx.fillStyle = "black";
-    this.ctx.fillText("LINE", 350, 100);
-    this.ctx.fillText(this.erasedLineTotal, 500, 100);
+    this.ctx.fillText("LINE", HOLD_W + FIELD_W + 50, 100);
+    this.ctx.fillText(this.erasedLineTotal, HOLD_W + FIELD_W + 200, 100);
 
-    this.ctx.fillText("SCORE", 350, 150);
-    this.ctx.fillText(this.score, 500, 150);
+    this.ctx.fillText("SCORE", HOLD_W + FIELD_W + 50, 150);
+    this.ctx.fillText(this.score, HOLD_W + FIELD_W + 200, 150);
 
-    this.ctx.fillText("LEVEL", 350, 200);
-    this.ctx.fillText(this.level, 500, 200);
+    this.ctx.fillText("LEVEL", HOLD_W + FIELD_W + 50, 200);
+    this.ctx.fillText(this.level, HOLD_W + FIELD_W + 200, 200);
+
   };
+  
+  p.renderHold = function(){
+    this.ctx.clearRect(0, 0, HOLD_W, HOLD_H);
+    for (var y = 0; y < 4; y++) {
+      for (var x = 0; x < 4; x++) {
+        this.drawHoldBlock(this.holdMino.x + x, this.holdMino.y + y - 1, this.holdMino.mino[y][x]);
+      }
+    }
+  }
 
   p.canMove = function (move_x, move_y, move_mino) {
     var next_x = this.current_mino.x + move_x;
@@ -67,11 +78,15 @@ var Game = (function() {
     return true;
   };
 
+  p.drawHoldBlock = function(x, y, block){
+    this.drawBlock(x-8, y+3, block);
+  }
+
   p.drawBlock = function(x, y, block) {
     if (block) {
       this.ctx.fillStyle = COLORS[block - 1];
-      this.ctx.fillRect(x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1);
-      this.ctx.strokeRect(x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1);
+      this.ctx.fillRect(HOLD_W + x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1);
+      this.ctx.strokeRect(HOLD_W + x * BLOCK_W, y * BLOCK_H, BLOCK_W - 1, BLOCK_H - 1);
     }
   };
 
@@ -157,6 +172,7 @@ var Game = (function() {
         }
       }
     }
+    this.clearRows();
     this.createNewMino();
   };
 
@@ -164,8 +180,10 @@ var Game = (function() {
     if(this.current_mino.holdable){
       this.current_mino.holdable = false;
       var tmp = this.current_mino;
-      this.current_mino = this.holdMino;
+      this.current_mino = this.holdMino || new Tetrimino();
+      this.current_mino.resetCoordinate();
       this.holdMino = tmp;
+      this.holdMino.resetCoordinate();
       for(var i = 0; i < 4; i++){
         if(this.current_mino.mino[0][i]){
           if(this.canMove(0,1)){
@@ -175,6 +193,7 @@ var Game = (function() {
         }
       }
     }
+    this.renderHold();
   };
 
   p.getClock = function(){

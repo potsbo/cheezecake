@@ -37,7 +37,7 @@ var formerlist = [];
 
 var Tetrimino = (function() {
 
-  var Tetrimino = function() {
+  var Tetrimino = function(request) {
     this.id;
     this.mino = [];
     this.val = [];
@@ -135,6 +135,11 @@ var Tetrimino = (function() {
     this.mino = rotated;
     return this.mino;
   };
+
+  p.resetCoordinate = function(){
+    this.x = 3;
+    this.y = 0;
+  }
 
   return Tetrimino;
 })();
