@@ -26,9 +26,9 @@ var Game = (function() {
   var p = Game.prototype;
 
   p.render = function (){
-    this.ctx.clearRect(0, 0, 600, 600);
+    this.ctx.clearRect(0, 0, FIELD_W *2, FIELD_H);
     this.ctx.strokeStyle = "black";
-    this.ctx.strokeRect(0, 0, 300, 600);
+    this.ctx.strokeRect(0, 0, FIELD_W, FIELD_H);
     for (var y = 0; y < ROWS; y++) {
       for (var x = 0; x < COLS; x++) {
         this.drawBlock(x, y, this.map[y+1][x]);
@@ -44,11 +44,9 @@ var Game = (function() {
     this.ctx.fillText("LINE", 350, 100);
     this.ctx.fillText(this.erasedLineTotal, 500, 100);
 
-    this.ctx.font = "bold 30px Century Gothic";
     this.ctx.fillText("SCORE", 350, 150);
     this.ctx.fillText(this.score, 500, 150);
 
-    this.ctx.font = "bold 30px Century Gothic";
     this.ctx.fillText("LEVEL", 350, 200);
     this.ctx.fillText(this.level, 500, 200);
   };
@@ -207,16 +205,6 @@ var Game = (function() {
     this.current_mino.rotateR();
     if (!this.canMove(0, 0))
       this.current_mino.rotateL();
-  };
-
-  p.moveLeft = function (){
-    if (this.canMove(-1, 0))
-      this.current_mino.x--;
-  };
-
-  p.moveRight = function (){
-    if (this.canMove(-1, 0))
-      this.current_mino.x--;
   };
 
   p.move = function(move_x, move_y){
