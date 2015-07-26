@@ -19,6 +19,7 @@ for (var y = 0; y < ROWS+1; y++) {
 }
 
 current_mino = new Tetrimino();
+holdable = true;
 for(var i = 0; i < 4; i++){
   if(current_mino.mino[0][i]){
     if(canMove(0,1)){
@@ -81,6 +82,7 @@ function tick() {
     clearRows();
     level = Math.floor(score / 1000)
     clock = getClock();
+    holdable = true;
     current_mino = new Tetrimino();
     for(var i = 0; i < 4; i++){
       if(current_mino.mino[0][i]){
@@ -169,6 +171,9 @@ document.body.onkeydown = function (e) {
     case 80:
       alert("pause");
       break;
+    case 79:
+      current_mino = hold(current_mino);
+      break;
   }
   render();
 }
@@ -207,6 +212,29 @@ function clearRows() {
     case 4:
       score += 1200;
       break;
+  }
+}
+
+var holdable = true;
+var holdMino = new Tetrimino();
+function hold(current_mino){
+  if(holdable){
+    holdable = false;
+    tmp = holdMino;
+    holdMino = current_mino;
+      current_x = 3;
+      current_y = 0;
+      for(var i = 0; i < 4; i++){
+        if(tmp.mino[0][i]){
+          if(canMove(0,1)){
+            current_y++;
+          }
+        break;
+        }
+      }
+    return tmp;
+  }else{
+    return current_mino;
   }
 }
 
