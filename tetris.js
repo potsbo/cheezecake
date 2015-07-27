@@ -154,7 +154,7 @@ var Game = (function() {
     if(!this.canMove(0,0)){
       this.render();
       this.gameOver = true;
-      if (window.localStorage) {
+      if (window.localStorage && this.savedata.highscore < this.score) {
         window.localStorage.setItem("highscore", this.score)
       }
       var result = confirm("GAME OVER\n restart?");
