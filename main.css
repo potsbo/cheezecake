@@ -1,10 +1,10 @@
 .wrapper {
 	display: block;
-	width: 600px;
+	width: 780px;
 	margin: auto;
 }
 
-canvas {
+#field {
 	display: block;
 	margin: auto;
 }
