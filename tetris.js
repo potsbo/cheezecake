@@ -19,6 +19,8 @@ var Game = (function() {
     this.gameOver = false;
     this.canvas = document.getElementById("field");
     this.ctx= this.canvas.getContext("2d");
+    this.savedata = new Object();
+    this.savedata.highscore = 0;
 
     for (var y = 0; y < ROWS+1; y++) {
       this.map[y] = [];
@@ -26,7 +28,14 @@ var Game = (function() {
         this.map[y][x] = 0;
       }
     }
-  }
+
+    if (window.localStorage) {
+        var local_storage = window.localStorage;
+        if (window.localStorage.getItem("highscore")) {
+            this.savedata.highscore = window.localStorage.getItem("highscore");
+        }
+    }
+  };
 
   p.render = function (){
     this.ctx.clearRect(HOLD_W, 0, FIELD_W *2, FIELD_H);
@@ -54,6 +63,8 @@ var Game = (function() {
     this.ctx.fillText("LEVEL", HOLD_W + FIELD_W + 50, 200);
     this.ctx.fillText(this.level, HOLD_W + FIELD_W + 200, 200);
 
+    this.ctx.fillText("HIGH SCORE", HOLD_W + FIELD_W + 50, 250);
+    this.ctx.fillText(this.savedata.highscore, HOLD_W + FIELD_W +200 , 280);
   };
 
   p.renderHold = function(){
@@ -83,7 +94,7 @@ var Game = (function() {
 
   p.drawHoldBlock = function(x, y, block){
     this.drawBlock(x-8, y+3, block);
-  }
+  };
 
   p.drawBlock = function(x, y, block) {
     if (block) {
@@ -143,6 +154,9 @@ var Game = (function() {
     if(!this.canMove(0,0)){
       this.render();
       this.gameOver = true;
+      if (window.localStorage) {
+        window.localStorage.setItem("highscore", this.score)
+      }
       var result = confirm("GAME OVER\n restart?");
       if(result){
         this.restart();
