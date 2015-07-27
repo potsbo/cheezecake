@@ -1,0 +1,10 @@
+.wrapper {
+	display: block;
+	width: 780px;
+	margin: auto;
+}
+
+#field {
+	display: block;
+	margin: auto;
+}
